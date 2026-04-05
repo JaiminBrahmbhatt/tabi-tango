@@ -41,6 +41,9 @@
     const root = clearRoot();
     if (!root) return;
 
+    const fab = document.getElementById('quiz-fab');
+    if (fab) fab.classList.remove('visible');
+
     const wrap = el('div', { className: 'quiz-setup' });
 
     const header = el('div', { className: 'quiz-setup-header' });
@@ -130,11 +133,45 @@
     const { phrase, options } = quizQuestions[currentQ];
     answered = false;
 
+    // Hide FAB when rendering new question
+    const fab = document.getElementById('quiz-fab');
+    if (fab) fab.classList.remove('visible');
+
     const wrap = el('div', { className: 'quiz-active' });
 
+    // Header with streak badge and hearts
     const header = el('div', { className: 'quiz-header' });
-    header.appendChild(el('span', { className: 'quiz-q-label' }, `Question ${currentQ + 1} of ${quizQuestions.length}`));
-    header.appendChild(el('span', { className: 'quiz-score-pill' }, `${score} correct`));
+
+    const leftSide = el('div', { style: { display: 'flex', flexDirection: 'column', gap: '0.35rem', flex: '1' } });
+    leftSide.appendChild(el('span', { className: 'quiz-q-label' }, `Question ${currentQ + 1} of ${quizQuestions.length}`));
+    header.appendChild(leftSide);
+
+    const rightSide = el('div', { style: { display: 'flex', alignItems: 'center', gap: '0.5rem' } });
+
+    // Streak badge
+    const streak = SRS.getMastery().streak || 0;
+    const streakBadge = el('div', { className: 'quiz-header-streak' });
+    const fireIcon = document.createElement('span');
+    fireIcon.className = 'material-symbols-outlined';
+    fireIcon.style.fontVariationSettings = "'FILL' 1";
+    fireIcon.textContent = 'local_fire_department';
+    streakBadge.appendChild(fireIcon);
+    streakBadge.appendChild(el('span', {}, String(streak)));
+    rightSide.appendChild(streakBadge);
+
+    // Hearts
+    const hearts = el('div', { className: 'quiz-hearts' });
+    const lives = 3;
+    for (let i = 0; i < 3; i++) {
+      const h = document.createElement('span');
+      h.className = 'material-symbols-outlined' + (i < lives ? '' : ' empty');
+      h.style.fontVariationSettings = i < lives ? "'FILL' 1" : "'FILL' 0";
+      h.textContent = 'favorite';
+      hearts.appendChild(h);
+    }
+    rightSide.appendChild(hearts);
+
+    header.appendChild(rightSide);
     wrap.appendChild(header);
 
     const bar = el('div', { className: 'quiz-progress-bar' });
@@ -202,7 +239,24 @@
       feedbackEl.textContent = `The answer is: ${phrase.romaji}`;
     }
 
-    setTimeout(() => { currentQ++; renderQuestion(); }, 1600);
+    // Show FAB button
+    const fab = document.getElementById('quiz-fab');
+    if (fab) {
+      fab.classList.add('visible');
+      fab.onclick = () => {
+        currentQ++;
+        renderQuestion();
+        fab.classList.remove('visible');
+      };
+    }
+
+    // Fallback auto-advance
+    setTimeout(() => {
+      if (answered) {
+        currentQ++;
+        renderQuestion();
+      }
+    }, 1800);
   }
 
   // ── Results ───────────────────────────────────────────────────────────────────
@@ -210,6 +264,10 @@
   function renderResults() {
     const root = clearRoot();
     if (!root) return;
+
+    const fab = document.getElementById('quiz-fab');
+    if (fab) fab.classList.remove('visible');
+
     SRS.recordQuizResult(score, quizQuestions.length, selectedCategory);
 
     const pct = Math.round((score / quizQuestions.length) * 100);
