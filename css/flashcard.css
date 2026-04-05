@@ -139,7 +139,32 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  flex: 1;
 }
+
+/* ── Speaker button ── */
+.btn-speak {
+  position: absolute;
+  bottom: 1.1rem;
+  right: 1.1rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1;
+}
+.btn-speak:hover { background: rgba(255,255,255,0.28); }
+.btn-speak:active { transform: scale(0.9); }
+.btn-speak .material-symbols-outlined { font-size: 19px; }
 
 .card-japanese {
   font-family: var(--font-jp);

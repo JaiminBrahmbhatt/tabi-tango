@@ -52,6 +52,18 @@
     if (text) text.textContent = `${m.mastered} / ${m.total}`;
   }
 
+  // ── Speech ───────────────────────────────────────────────────────────────────
+
+  function speakJapanese(text) {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ja-JP';
+    u.rate = 0.85;
+    u.pitch = 1.0;
+    window.speechSynthesis.speak(u);
+  }
+
   function updateTripCountdown() {
     const days = SRS.getTripDaysRemaining();
     const countEl = document.getElementById('trip-countdown');
@@ -190,14 +202,21 @@
       flipHint
     ]);
 
-    // Back face (notes are shown in grade tray pro-tip, not here)
+    // Back face — speaker button for audio replay
     const backContent = el('div', { className: 'card-back-content' }, [
       diffBar,
       el('div', { className: 'card-japanese' }, phrase.japanese),
       el('div', { className: 'card-romaji' }, phrase.romaji),
     ]);
 
-    const back = el('div', { className: 'card-face card-back' }, [backContent]);
+    const speakBtn = el('button', { className: 'btn-speak' });
+    const speakIcon = document.createElement('span');
+    speakIcon.className = 'material-symbols-outlined';
+    speakIcon.textContent = 'volume_up';
+    speakBtn.appendChild(speakIcon);
+    speakBtn.addEventListener('click', e => { e.stopPropagation(); speakJapanese(phrase.japanese); });
+
+    const back = el('div', { className: 'card-face card-back' }, [backContent, speakBtn]);
 
     const flipCard = el('div', { className: 'card', id: 'flip-card' }, [front, back]);
     const container = el('div', { className: 'card-container', id: 'card-container' }, flipCard);
@@ -300,6 +319,7 @@
     card.classList.toggle('flipped', isFlipped);
     if (isFlipped && deck.length > 0) {
       showGradeTray(deck[currentIndex]);
+      setTimeout(() => speakJapanese(deck[currentIndex].japanese), 300);
     } else {
       hideGradeTray();
     }
