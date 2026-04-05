@@ -132,7 +132,61 @@ img, svg { display: block; }
   margin: 0 auto;
   padding: 0 1.25rem;
 }
-main { flex: 1; padding: 2rem 0 4rem; }
+main { flex: 1; padding: 1.5rem 0 4rem; }
+
+/* ── Session hero ── */
+.session-hero {
+  margin-bottom: 1.5rem;
+}
+.session-greeting {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+.session-sub {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-2);
+  margin-top: 0.2rem;
+}
+
+/* ── Study layout grid ── */
+.study-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.study-sidebar .mastery-bar-wrap { margin-bottom: 1.25rem; }
+
+/* Desktop: side-by-side */
+@media (min-width: 660px) {
+  :root { --max-w: 920px; }
+
+  .study-grid {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  /* Vertical category tabs in sidebar */
+  .study-sidebar .category-tabs {
+    flex-direction: column;
+    overflow: visible;
+    margin-bottom: 0;
+    gap: 3px;
+  }
+
+  .study-sidebar .cat-tab {
+    border-radius: var(--r-sm);
+    justify-content: flex-start;
+    padding: 0.45rem 0.85rem;
+    width: 100%;
+  }
+}
 
 /* ── Navigation ── */
 nav {

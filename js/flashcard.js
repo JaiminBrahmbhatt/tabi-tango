@@ -9,7 +9,7 @@
   let deck = [];
   let currentIndex = 0;
   let isFlipped = false;
-  let swipeBlocked = false; // suppress tap-to-flip after a completed swipe
+  let swipeBlocked = false;
 
   // ── DOM helper ───────────────────────────────────────────────────────────────
 
@@ -53,25 +53,36 @@
     const fill = document.getElementById('mastery-fill');
     const text = document.getElementById('mastery-text');
     if (fill) fill.style.width = pct + '%';
-    if (text) text.textContent = `${m.mastered} / ${m.total} phrases`;
+    if (text) text.textContent = `${m.mastered} / ${m.total}`;
   }
 
   function updateTripCountdown() {
     const days = SRS.getTripDaysRemaining();
-    const el2 = document.getElementById('trip-countdown');
-    if (!el2) return;
-    while (el2.firstChild) el2.removeChild(el2.firstChild);
-    if (days === 0) {
-      const s = document.createElement('strong');
-      s.textContent = 'Your Japan trip is today — がんばって!';
-      el2.appendChild(s);
-    } else {
-      const s = document.createElement('strong');
-      s.textContent = `${days} day${days !== 1 ? 's' : ''}`;
-      el2.appendChild(document.createTextNode(''));
-      el2.appendChild(s);
-      el2.appendChild(document.createTextNode(' until your Japan trip'));
-    }
+    const countEl = document.getElementById('trip-countdown');
+    if (!countEl) return;
+    while (countEl.firstChild) countEl.removeChild(countEl.firstChild);
+    const s = document.createElement('strong');
+    s.textContent = `${days} day${days !== 1 ? 's' : ''}`;
+    countEl.appendChild(s);
+    countEl.appendChild(document.createTextNode(' until your Japan trip'));
+  }
+
+  // ── Session hero ─────────────────────────────────────────────────────────────
+
+  function renderSessionHero() {
+    const hero = document.getElementById('session-hero');
+    if (!hero) return;
+    while (hero.firstChild) hero.removeChild(hero.firstChild);
+
+    const h = new Date().getHours();
+    const greeting = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+    const due = SRS.getDueCards().length;
+    const sub = due > 0
+      ? `${due} card${due !== 1 ? 's' : ''} due today`
+      : 'All caught up for today';
+
+    hero.appendChild(el('div', { className: 'session-greeting' }, greeting));
+    hero.appendChild(el('div', { className: 'session-sub' }, sub));
   }
 
   // ── Render ───────────────────────────────────────────────────────────────────
@@ -85,7 +96,7 @@
       root.appendChild(el('div', { className: 'empty-state' }, [
         el('div', { className: 'empty-icon' }, '—'),
         el('h3', {}, 'No phrases here'),
-        el('p', {}, 'Select a different category to continue.')
+        el('p', {}, 'Select a different category.')
       ]));
       return;
     }
@@ -105,7 +116,7 @@
       counter.appendChild(el('span', { className: 'due-pill' }, 'Due'));
     }
 
-    // Difficulty segments
+    // Difficulty dots
     const diffBar = el('div', { className: 'difficulty-bar' });
     for (let n = 1; n <= 3; n++) {
       diffBar.appendChild(el('span', { className: 'difficulty-seg' + (n <= phrase.difficulty ? ' on' : '') }));
@@ -118,22 +129,22 @@
       el('div', { className: 'card-flip-hint' }, 'Tap to reveal')
     ]);
 
-    // Back face
-    const backChildren = [
+    // Back face — grade buttons live inside
+    const backContent = el('div', { className: 'card-back-content' }, [
       diffBar,
       el('div', { className: 'card-japanese' }, phrase.japanese),
-      el('div', { className: 'card-romaji' }, phrase.romaji)
-    ];
-    if (phrase.notes) backChildren.push(el('div', { className: 'card-notes' }, phrase.notes));
-    const back = el('div', { className: 'card-face card-back' }, backChildren);
+      el('div', { className: 'card-romaji' }, phrase.romaji),
+      ...(phrase.notes ? [el('div', { className: 'card-notes' }, phrase.notes)] : [])
+    ]);
+
+    const btnForgot = el('button', { className: 'btn-grade-forgot', id: 'btn-forgot' }, 'Forgot');
+    const btnRemembered = el('button', { className: 'btn-grade-remembered', id: 'btn-remembered' }, 'Remembered');
+    const gradeRow = el('div', { className: 'card-grade-row' }, [btnForgot, btnRemembered]);
+
+    const back = el('div', { className: 'card-face card-back' }, [backContent, gradeRow]);
 
     const flipCard = el('div', { className: 'card', id: 'flip-card' }, [front, back]);
     const container = el('div', { className: 'card-container', id: 'card-container' }, flipCard);
-
-    // Grade buttons
-    const btnForgot = el('button', { className: 'btn-forgot', id: 'btn-forgot' }, 'Forgot');
-    const btnRemembered = el('button', { className: 'btn-remembered', id: 'btn-remembered' }, 'Remembered');
-    const gradeButtons = el('div', { className: 'grade-buttons', id: 'grade-buttons' }, [btnForgot, btnRemembered]);
 
     // Nav
     const btnPrev = el('button', { className: 'btn-nav', id: 'btn-prev' }, '←');
@@ -147,8 +158,7 @@
       btnNext
     ]);
 
-    const area = el('div', { className: 'card-area' }, [counter, container, gradeButtons, nav]);
-    root.appendChild(area);
+    root.appendChild(el('div', { className: 'card-area' }, [counter, container, nav]));
 
     isFlipped = false;
     attachListeners();
@@ -168,6 +178,7 @@
     if (btnPrev) btnPrev.addEventListener('click', prevCard);
     if (btnNext) btnNext.addEventListener('click', nextCard);
 
+    // Drag-to-swipe
     if (container) {
       let startX = 0, startY = 0, dragX = 0;
       let dragging = false;
@@ -184,10 +195,7 @@
       container.addEventListener('touchmove', e => {
         const dx = e.touches[0].clientX - startX;
         const dy = e.touches[0].clientY - startY;
-        // Only hijack horizontal swipes
-        if (!dragging && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 8) {
-          dragging = true;
-        }
+        if (!dragging && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 8) dragging = true;
         if (dragging) {
           dragX = dx;
           const capped = Math.sign(dx) * Math.min(Math.abs(dx) * 0.55, 110);
@@ -203,21 +211,18 @@
         const canPrev = currentIndex > 0;
 
         if (dragX < -THRESHOLD && canNext) {
-          // Swipe left → next card
           swipeBlocked = true;
           container.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
           container.style.transform = 'translateX(-110%)';
           container.style.opacity = '0';
           setTimeout(() => { currentIndex++; renderCard(); }, 240);
         } else if (dragX > THRESHOLD && canPrev) {
-          // Swipe right → prev card
           swipeBlocked = true;
           container.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
           container.style.transform = 'translateX(110%)';
           container.style.opacity = '0';
           setTimeout(() => { currentIndex--; renderCard(); }, 240);
         } else {
-          // Snap back
           container.style.transition = 'transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.35s ease';
           container.style.transform = '';
           container.style.opacity = '';
@@ -231,11 +236,9 @@
   function doFlip() {
     if (swipeBlocked) { swipeBlocked = false; return; }
     const card = document.getElementById('flip-card');
-    const btns = document.getElementById('grade-buttons');
     if (!card) return;
     isFlipped = !isFlipped;
     card.classList.toggle('flipped', isFlipped);
-    if (btns) btns.classList.toggle('visible', isFlipped);
   }
 
   function nextCard() {
@@ -250,6 +253,7 @@
     SRS.gradeCard(deck[currentIndex].id, remembered);
     updateMasteryBar();
     updateDueBadge();
+    renderSessionHero();
     setTimeout(() => {
       if (currentIndex < deck.length - 1) {
         currentIndex++;
@@ -297,6 +301,7 @@
 
   deck = getFilteredDeck('all');
   initTabs();
+  renderSessionHero();
   renderCard();
   updateMasteryBar();
   updateDueBadge();
