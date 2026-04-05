@@ -9,6 +9,7 @@
   let deck = [];
   let currentIndex = 0;
   let isFlipped = false;
+  let swipeBlocked = false; // suppress tap-to-flip after a completed swipe
 
   // ── DOM helper ───────────────────────────────────────────────────────────────
 
@@ -168,11 +169,59 @@
     if (btnNext) btnNext.addEventListener('click', nextCard);
 
     if (container) {
-      let tx = 0;
-      container.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
-      container.addEventListener('touchend', e => {
-        const d = e.changedTouches[0].clientX - tx;
-        if (Math.abs(d) > 50) d < 0 ? nextCard() : prevCard();
+      let startX = 0, startY = 0, dragX = 0;
+      let dragging = false;
+      const THRESHOLD = 70;
+
+      container.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        dragX = 0;
+        dragging = false;
+        container.style.transition = 'none';
+      }, { passive: true });
+
+      container.addEventListener('touchmove', e => {
+        const dx = e.touches[0].clientX - startX;
+        const dy = e.touches[0].clientY - startY;
+        // Only hijack horizontal swipes
+        if (!dragging && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 8) {
+          dragging = true;
+        }
+        if (dragging) {
+          dragX = dx;
+          const capped = Math.sign(dx) * Math.min(Math.abs(dx) * 0.55, 110);
+          container.style.transform = `translateX(${capped}px)`;
+          container.style.opacity = String(Math.max(0.4, 1 - Math.abs(dx) / 350));
+        }
+      }, { passive: true });
+
+      container.addEventListener('touchend', () => {
+        if (!dragging) return;
+        dragging = false;
+        const canNext = currentIndex < deck.length - 1;
+        const canPrev = currentIndex > 0;
+
+        if (dragX < -THRESHOLD && canNext) {
+          // Swipe left → next card
+          swipeBlocked = true;
+          container.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+          container.style.transform = 'translateX(-110%)';
+          container.style.opacity = '0';
+          setTimeout(() => { currentIndex++; renderCard(); }, 240);
+        } else if (dragX > THRESHOLD && canPrev) {
+          // Swipe right → prev card
+          swipeBlocked = true;
+          container.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+          container.style.transform = 'translateX(110%)';
+          container.style.opacity = '0';
+          setTimeout(() => { currentIndex--; renderCard(); }, 240);
+        } else {
+          // Snap back
+          container.style.transition = 'transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.35s ease';
+          container.style.transform = '';
+          container.style.opacity = '';
+        }
       }, { passive: true });
     }
   }
@@ -180,6 +229,7 @@
   // ── Actions ──────────────────────────────────────────────────────────────────
 
   function doFlip() {
+    if (swipeBlocked) { swipeBlocked = false; return; }
     const card = document.getElementById('flip-card');
     const btns = document.getElementById('grade-buttons');
     if (!card) return;
