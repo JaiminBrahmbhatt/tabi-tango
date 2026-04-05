@@ -19,8 +19,23 @@
 <div class="bg-blob bg-blob-1"></div>
 <div class="bg-blob bg-blob-2"></div>
 
+<!-- Session header (mobile only) -->
+<header class="session-header" id="session-header">
+  <button class="session-btn" id="btn-close-session">
+    <span class="material-symbols-outlined">close</span>
+  </button>
+  <div class="session-info">
+    <span class="session-label">Session Progress</span>
+    <span class="session-card-count" id="session-card-count">Card 1 of 65</span>
+  </div>
+  <button class="session-btn" id="btn-pause-session">
+    <span class="material-symbols-outlined">pause</span>
+  </button>
+</header>
+<div class="session-progress-bar"><div class="session-progress-fill" id="session-progress-fill"></div></div>
+
 <!-- Top nav (desktop) -->
-<nav>
+<nav class="desktop-only-nav">
   <div class="nav-inner">
     <div class="nav-logo">
       <span class="logo-primary">Tabi Tango</span>
@@ -88,13 +103,33 @@
       <div class="study-main">
         <div id="flashcard-root"></div>
         <div class="keyboard-hint">
-          <span class="key-item"><kbd>Space</kbd> flip</span>
-          <span class="key-item"><kbd>→</kbd> next</span>
-          <span class="key-item"><kbd>←</kbd> prev</span>
-          <span class="key-item"><kbd>1</kbd> again</span>
-          <span class="key-item"><kbd>2</kbd> hard</span>
-          <span class="key-item"><kbd>3</kbd> good</span>
-          <span class="key-item"><kbd>4</kbd> easy</span>
+          <div class="kb-nav-group">
+            <span class="kb-item"><kbd>Space</kbd> Flip</span>
+            <span class="kb-item"><kbd>←</kbd> Prev</span>
+            <span class="kb-item"><kbd>→</kbd> Next</span>
+          </div>
+          <div class="kb-grade-group">
+            <span class="kb-grade-item kb-again">
+              <kbd>1</kbd>
+              <span class="material-symbols-outlined">replay</span>
+              Again
+            </span>
+            <span class="kb-grade-item kb-hard">
+              <kbd>2</kbd>
+              <span class="material-symbols-outlined">sentiment_neutral</span>
+              Hard
+            </span>
+            <span class="kb-grade-item kb-good">
+              <kbd>3</kbd>
+              <span class="material-symbols-outlined">sentiment_satisfied</span>
+              Good
+            </span>
+            <span class="kb-grade-item kb-easy">
+              <kbd>4</kbd>
+              <span class="material-symbols-outlined">sentiment_very_satisfied</span>
+              Easy
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -102,8 +137,9 @@
   </div>
 </main>
 
-<!-- Grade tray (shown on flip) -->
-<div class="grade-tray" id="grade-tray">
+<!-- Grade section (shown on flip, inline below card) -->
+<div class="grade-section" id="grade-section" style="display:none">
+  <div class="streak-display" id="streak-display"></div>
   <div class="grade-grid" id="grade-grid"></div>
   <div class="grade-tip" id="grade-tip" style="display:none">
     <span class="material-symbols-outlined">lightbulb</span>

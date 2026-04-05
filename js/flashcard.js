@@ -87,9 +87,42 @@
     hero.appendChild(el('div', { className: 'session-sub' }, sub));
   }
 
-  // ── Grade tray ────────────────────────────────────────────────────────────────
+  // ── Session header ────────────────────────────────────────────────────────────
 
-  function renderGradeTray(phrase) {
+  function updateSessionHeader(idx, deckLength) {
+    const countEl = document.getElementById('session-card-count');
+    const fillEl = document.getElementById('session-progress-fill');
+    if (countEl) countEl.textContent = `Card ${idx + 1} of ${deckLength}`;
+    if (fillEl) fillEl.style.width = deckLength > 0 ? `${(idx / deckLength) * 100}%` : '0%';
+  }
+
+  // ── Streak dots ───────────────────────────────────────────────────────────────
+
+  function renderStreakDots(streakDays) {
+    const container = document.getElementById('streak-display');
+    if (!container) return;
+    while (container.firstChild) container.removeChild(container.firstChild);
+
+    const label = document.createElement('span');
+    label.className = 'streak-label';
+    label.textContent = `Current Streak: ${streakDays} Day${streakDays !== 1 ? 's' : ''}`;
+    container.appendChild(label);
+
+    const dots = document.createElement('div');
+    dots.className = 'streak-dots';
+    const total = 7;
+    const filled = Math.min(streakDays, total);
+    for (let i = 0; i < total; i++) {
+      const dot = document.createElement('span');
+      dot.className = 'streak-dot' + (i < filled ? ' active' : '');
+      dots.appendChild(dot);
+    }
+    container.appendChild(dots);
+  }
+
+  // ── Grade section ─────────────────────────────────────────────────────────────
+
+  function renderGradeSection(phrase) {
     const grid = document.getElementById('grade-grid');
     const tipEl = document.getElementById('grade-tip');
     const tipText = document.getElementById('grade-tip-text');
@@ -139,15 +172,20 @@
     }
   }
 
-  function showGradeTray(phrase) {
-    renderGradeTray(phrase);
-    const tray = document.getElementById('grade-tray');
-    if (tray) tray.classList.add('visible');
+  function showGradeSection(phrase) {
+    renderGradeSection(phrase);
+    const mastery = SRS.getMastery();
+    renderStreakDots(mastery.streak || 0);
+    const section = document.getElementById('grade-section');
+    if (section) {
+      section.style.display = 'block';
+      setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+    }
   }
 
-  function hideGradeTray() {
-    const tray = document.getElementById('grade-tray');
-    if (tray) tray.classList.remove('visible');
+  function hideGradeSection() {
+    const section = document.getElementById('grade-section');
+    if (section) section.style.display = 'none';
   }
 
   // ── Card rendering ────────────────────────────────────────────────────────────
@@ -156,7 +194,7 @@
     const root = document.getElementById('flashcard-root');
     if (!root) return;
     while (root.firstChild) root.removeChild(root.firstChild);
-    hideGradeTray();
+    hideGradeSection();
 
     if (deck.length === 0) {
       root.appendChild(el('div', { className: 'empty-state' }, [
@@ -188,35 +226,50 @@
       diffBar.appendChild(el('span', { className: 'difficulty-seg' + (n <= phrase.difficulty ? ' on' : '') }));
     }
 
-    // Front face
+    // Front face — Japanese prompt with speaker button
     const flipHint = el('div', { className: 'card-flip-hint' });
     const touchIcon = document.createElement('span');
     touchIcon.className = 'material-symbols-outlined';
     touchIcon.textContent = 'touch_app';
     flipHint.appendChild(touchIcon);
-    flipHint.appendChild(document.createTextNode('Tap to reveal'));
+    flipHint.appendChild(document.createTextNode('Tap to flip'));
 
-    const front = el('div', { className: 'card-face card-front' }, [
-      el('span', { className: 'card-category-label' }, cat.label),
-      el('div', { className: 'card-english' }, phrase.english),
-      flipHint
-    ]);
+    const speakBtn = el('button', { className: 'btn-speak' });
+    const speakIcon = document.createElement('span');
+    speakIcon.className = 'material-symbols-outlined';
+    speakIcon.style.fontVariationSettings = "'FILL' 1";
+    speakIcon.textContent = 'volume_up';
+    speakBtn.appendChild(speakIcon);
+    speakBtn.addEventListener('click', e => { e.stopPropagation(); speakJapanese(phrase.japanese); });
 
-    // Back face — speaker button for audio replay
-    const backContent = el('div', { className: 'card-back-content' }, [
+    const frontContent = el('div', { className: 'card-front-content' }, [
       diffBar,
       el('div', { className: 'card-japanese' }, phrase.japanese),
       el('div', { className: 'card-romaji' }, phrase.romaji),
     ]);
 
-    const speakBtn = el('button', { className: 'btn-speak' });
-    const speakIcon = document.createElement('span');
-    speakIcon.className = 'material-symbols-outlined';
-    speakIcon.textContent = 'volume_up';
-    speakBtn.appendChild(speakIcon);
-    speakBtn.addEventListener('click', e => { e.stopPropagation(); speakJapanese(phrase.japanese); });
+    const front = el('div', { className: 'card-face card-front' }, [
+      el('span', { className: 'card-category-label' }, cat.label),
+      frontContent,
+      flipHint,
+      speakBtn
+    ]);
 
-    const back = el('div', { className: 'card-face card-back' }, [backContent, speakBtn]);
+    // Back face — English meaning (mirrors front structure for consistent card size)
+    const diffBar2 = el('div', { className: 'difficulty-bar' });
+    for (let n = 1; n <= 3; n++) {
+      diffBar2.appendChild(el('span', { className: 'difficulty-seg' + (n <= phrase.difficulty ? ' on' : '') }));
+    }
+
+    const back = el('div', { className: 'card-face card-back' }, [
+      el('span', { className: 'card-category-label' }, cat.label),
+      el('div', { className: 'card-back-content' }, [
+        diffBar2,
+        el('div', { className: 'card-english' }, phrase.english),
+        ...(phrase.notes ? [el('div', { className: 'card-notes-back' }, phrase.notes)] : [])
+      ]),
+      el('div', { className: 'card-flip-hint', style: { visibility: 'hidden' } }, '.')
+    ]);
 
     const flipCard = el('div', { className: 'card', id: 'flip-card' }, [front, back]);
     const container = el('div', { className: 'card-container', id: 'card-container' }, flipCard);
@@ -247,6 +300,7 @@
     root.appendChild(el('div', { className: 'card-area' }, [counter, container, nav]));
 
     isFlipped = false;
+    updateSessionHeader(currentIndex, deck.length);
     attachListeners();
   }
 
@@ -318,9 +372,9 @@
     isFlipped = !isFlipped;
     card.classList.toggle('flipped', isFlipped);
     if (isFlipped && deck.length > 0) {
-      showGradeTray(deck[currentIndex]);
+      showGradeSection(deck[currentIndex]);
     } else {
-      hideGradeTray();
+      hideGradeSection();
     }
   }
 
@@ -337,7 +391,7 @@
     updateMasteryBar();
     updateDueBadge();
     renderSessionHero();
-    hideGradeTray();
+    hideGradeSection();
     setTimeout(() => {
       if (currentIndex < deck.length - 1) {
         currentIndex++;

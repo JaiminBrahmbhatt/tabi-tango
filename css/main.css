@@ -513,26 +513,61 @@ footer strong { color: var(--text); font-weight: 700; }
 /* ── Keyboard hint ── */
 .keyboard-hint {
   display: flex;
-  justify-content: center;
-  gap: 1.25rem;
-  flex-wrap: wrap;
-  margin-top: 1.25rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
 }
-.key-item {
+.kb-nav-group {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.kb-item {
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.72rem;
-  font-weight: 500;
+  font-size: 0.7rem;
+  font-weight: 600;
   color: var(--text-3);
+  background: var(--surface-low);
+  border: 1px solid var(--sep);
+  border-radius: var(--r-full);
+  padding: 0.25rem 0.65rem;
 }
+.kb-grade-group {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.kb-grade-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.3rem 0.65rem 0.3rem 0.4rem;
+  border-radius: var(--r-full);
+  background: var(--surface-low);
+  border: 1px solid var(--sep);
+  font-family: var(--font-hd);
+}
+.kb-grade-item .material-symbols-outlined { font-size: 14px; }
+.kb-again { color: var(--error); border-color: rgba(180,19,64,0.15); background: rgba(180,19,64,0.05); }
+.kb-hard  { color: var(--text-2); }
+.kb-good  { color: var(--primary); border-color: rgba(182,24,0,0.15); background: rgba(182,24,0,0.04); }
+.kb-easy  { color: var(--tertiary); border-color: rgba(125,64,160,0.15); background: rgba(125,64,160,0.04); }
 kbd {
   display: inline-block;
-  padding: 0.12rem 0.4rem;
+  padding: 0.1rem 0.35rem;
   border: 1px solid var(--sep);
   border-radius: 5px;
   background: var(--surface-lowest);
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-family: var(--font);
   color: var(--text-2);
   box-shadow: 0 1px 0 var(--sep);
@@ -563,3 +598,103 @@ kbd {
 .flex-center { display: flex; align-items: center; justify-content: center; }
 .gap-1 { gap: 0.5rem; }
 .gap-2 { gap: 1rem; }
+
+/* ── Session header (mobile only for study page) ── */
+.session-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem 0.75rem;
+  background: var(--bg);
+}
+.session-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-lg);
+  background: var(--surface-low);
+  border: none;
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.session-btn:active { transform: scale(0.93); }
+.session-btn .material-symbols-outlined { font-size: 20px; }
+.session-info { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.session-label {
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--primary);
+  opacity: 0.7;
+  font-family: var(--font-hd);
+}
+.session-card-count {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text);
+  font-family: var(--font-hd);
+}
+.session-progress-bar {
+  height: 4px;
+  background: var(--surface-high);
+  margin: 0;
+}
+.session-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--primary-container));
+  border-radius: 0 var(--r-full) var(--r-full) 0;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+/* Hide session header on desktop, show nav */
+@media (min-width: 660px) {
+  .session-header { display: none; }
+  .session-progress-bar { display: none; }
+  .desktop-only-nav { display: block !important; }
+}
+/* On mobile, hide desktop nav for study focus */
+@media (max-width: 659px) {
+  .desktop-only-nav { display: none !important; }
+}
+
+/* ── Grade section (inline, bottom of page) ── */
+.grade-section {
+  padding: 1.5rem 1rem calc(1.5rem + env(safe-area-inset-bottom));
+  background: var(--surface-low);
+  border-radius: 40px 40px 0 0;
+  box-shadow: 0 -4px 32px rgba(47,46,46,0.06);
+  margin-top: 0.5rem;
+}
+.streak-display {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.streak-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-3);
+  font-family: var(--font-hd);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.streak-dots {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+.streak-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--surface-variant);
+}
+.streak-dot.active {
+  background: var(--primary);
+}
