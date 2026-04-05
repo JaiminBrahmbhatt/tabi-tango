@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz — Tabi Tango</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <script src="js/theme.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Figtree:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/quiz.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <span class="logo-primary">Tabi Tango</span>
+      <span class="logo-sub">旅単語 · Journey Words</span>
+    </div>
+    <div class="nav-center">
+      <a href="index.html" class="nav-link">
+        Study
+        <span class="due-badge" id="due-count">0</span>
+      </a>
+      <a href="quiz.html" class="nav-link active">Quiz</a>
+      <a href="progress.html" class="nav-link">Progress</a>
+    </div>
+    <div class="nav-right">
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="display:none">
+          <circle cx="10" cy="10" r="3.5"/>
+          <line x1="10" y1="2" x2="10" y2="3.5"/>
+          <line x1="10" y1="16.5" x2="10" y2="18"/>
+          <line x1="2" y1="10" x2="3.5" y2="10"/>
+          <line x1="16.5" y1="10" x2="18" y2="10"/>
+          <line x1="4.1" y1="4.1" x2="5.2" y2="5.2"/>
+          <line x1="14.8" y1="14.8" x2="15.9" y2="15.9"/>
+          <line x1="15.9" y1="4.1" x2="14.8" y2="5.2"/>
+          <line x1="5.2" y1="14.8" x2="4.1" y2="15.9"/>
+        </svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M15.5 10.5a6 6 0 1 1-6-6 4.5 4.5 0 0 0 6 6z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div id="quiz-root"></div>
+  </div>
+</main>
+
+<footer>
+  <span id="trip-countdown">Loading…</span>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/srs.js"></script>
+<script src="js/quiz.js"></script>
+</body>
+</html>

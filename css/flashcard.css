@@ -1,0 +1,232 @@
+/* ── Flashcard area ── */
+.card-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.card-counter {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.due-pill {
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  border-radius: var(--r-full);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.1rem 0.5rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* ── 3D flip container ── */
+.card-container {
+  perspective: 1400px;
+  width: min(500px, 92vw);
+  height: 290px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.35, 0, 0.15, 1);
+}
+.card.flipped { transform: rotateY(180deg); }
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-xl);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  gap: 0.65rem;
+}
+
+/* Front */
+.card-front {
+  background: var(--surface);
+  border: 1px solid var(--sep);
+  box-shadow: var(--shadow-md);
+}
+
+.card-category-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.card-english {
+  font-family: var(--font-hd);
+  font-size: clamp(1.35rem, 4vw, 1.8rem);
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.card-flip-hint {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-3);
+  margin-top: 0.25rem;
+}
+
+/* Back */
+.card-back {
+  background: var(--primary);
+  transform: rotateY(180deg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+/* subtle shine */
+.card-back::before {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -20%;
+  width: 60%;
+  height: 100%;
+  background: rgba(255,255,255,0.06);
+  transform: skewX(-15deg);
+  pointer-events: none;
+}
+
+.card-japanese {
+  font-family: var(--font-jp);
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+}
+
+.card-romaji {
+  font-size: clamp(0.875rem, 2.2vw, 1rem);
+  font-weight: 500;
+  color: rgba(255,255,255,0.7);
+  text-align: center;
+  font-style: italic;
+  letter-spacing: 0.01em;
+}
+
+.card-notes {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  max-width: 260px;
+}
+
+.difficulty-bar {
+  display: flex;
+  gap: 3px;
+  margin-top: 0.25rem;
+}
+.difficulty-seg {
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.2);
+}
+.difficulty-seg.on { background: rgba(255,255,255,0.8); }
+
+/* ── Grade buttons ── */
+.grade-buttons {
+  display: flex;
+  gap: 0.65rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.grade-buttons.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.btn-forgot {
+  padding: 0.55rem 1.4rem;
+  border-radius: var(--r-sm);
+  font-family: var(--font);
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: transparent;
+  border: 1.5px solid var(--danger);
+  color: var(--danger);
+  transition: all 0.15s ease;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+}
+.btn-forgot:hover { background: var(--danger); color: white; }
+
+.btn-remembered {
+  padding: 0.55rem 1.4rem;
+  border-radius: var(--r-sm);
+  font-family: var(--font);
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: var(--success);
+  border: 1.5px solid transparent;
+  color: white;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+}
+.btn-remembered:hover { filter: brightness(1.1); }
+
+/* ── Card navigation ── */
+.card-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-nav {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-full);
+  background: var(--surface);
+  border: 1px solid var(--sep);
+  color: var(--text-2);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  box-shadow: var(--shadow-xs);
+}
+.btn-nav:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+.btn-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.card-last-seen {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-3);
+  min-width: 100px;
+  text-align: center;
+}

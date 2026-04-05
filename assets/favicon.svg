@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Torii gate -->
+  <rect x="6" y="16" width="52" height="6" rx="3" fill="#c0392b"/>
+  <rect x="10" y="22" width="44" height="4" rx="2" fill="#c0392b"/>
+  <rect x="14" y="26" width="5" height="32" rx="2" fill="#c0392b"/>
+  <rect x="45" y="26" width="5" height="32" rx="2" fill="#c0392b"/>
+  <rect x="10" y="36" width="44" height="4" rx="2" fill="#c0392b"/>
+</svg>
