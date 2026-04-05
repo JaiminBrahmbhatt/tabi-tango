@@ -8,32 +8,6 @@ Study the 65 most useful phrases for traveling Japan — greetings, food, shoppi
 
 ---
 
-## Screenshots
-
-### Study — Desktop
-
-| Front (English prompt) | Back (Japanese answer + grading) |
-|---|---|
-| ![Study desktop front](assets/screenshots/study-desktop.jpg) | ![Study desktop flipped](assets/screenshots/study-desktop-flipped.jpg) |
-
-### Study — Mobile
-
-| Front | Back + Grade Sheet |
-|---|---|
-| ![Study mobile front](assets/screenshots/study-mobile.jpg) | ![Study mobile flipped](assets/screenshots/study-mobile-flipped.jpg) |
-
-### Quiz Mode — Mobile
-
-| Setup | Active Question |
-|---|---|
-| ![Quiz setup](assets/screenshots/quiz-mobile.jpg) | ![Quiz active](assets/screenshots/quiz-mobile-active.jpg) |
-
-### Progress Tracker — Mobile
-
-![Progress page](assets/screenshots/progress-mobile.jpg)
-
----
-
 ## Features
 
 - **65 phrases** across 5 categories: Greetings, Food, Shopping, Directions, Emergency
