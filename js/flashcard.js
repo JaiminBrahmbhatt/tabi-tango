@@ -319,7 +319,6 @@
     card.classList.toggle('flipped', isFlipped);
     if (isFlipped && deck.length > 0) {
       showGradeTray(deck[currentIndex]);
-      setTimeout(() => speakJapanese(deck[currentIndex].japanese), 300);
     } else {
       hideGradeTray();
     }
