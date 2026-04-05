@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Be+Vietnam+Pro:wght@400;500;600&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/flashcard.css">
+  <link rel="stylesheet" href="css/main.css?v=5">
+  <link rel="stylesheet" href="css/flashcard.css?v=5">
 </head>
 <body class="grain-overlay">
 
@@ -102,6 +102,17 @@
 
       <div class="study-main">
         <div id="flashcard-root"></div>
+
+        <!-- Grade section (shown on flip, inline on desktop / fixed sheet on mobile) -->
+        <div class="grade-section" id="grade-section" style="display:none">
+          <div class="streak-display" id="streak-display"></div>
+          <div class="grade-grid" id="grade-grid"></div>
+          <div class="grade-tip" id="grade-tip" style="display:none">
+            <span class="material-symbols-outlined">lightbulb</span>
+            <p id="grade-tip-text"></p>
+          </div>
+        </div>
+
         <div class="keyboard-hint">
           <div class="kb-nav-group">
             <span class="kb-item"><kbd>Space</kbd> Flip</span>
@@ -137,16 +148,6 @@
   </div>
 </main>
 
-<!-- Grade section (shown on flip, inline below card) -->
-<div class="grade-section" id="grade-section" style="display:none">
-  <div class="streak-display" id="streak-display"></div>
-  <div class="grade-grid" id="grade-grid"></div>
-  <div class="grade-tip" id="grade-tip" style="display:none">
-    <span class="material-symbols-outlined">lightbulb</span>
-    <p id="grade-tip-text"></p>
-  </div>
-</div>
-
 <!-- Bottom nav (mobile) -->
 <nav class="bottom-nav">
   <a href="index.html" class="bottom-nav-item active">
@@ -169,6 +170,6 @@
 
 <script src="js/data.js"></script>
 <script src="js/srs.js"></script>
-<script src="js/flashcard.js"></script>
+<script src="js/flashcard.js?v=5"></script>
 </body>
 </html>

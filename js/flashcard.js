@@ -179,13 +179,30 @@
     const section = document.getElementById('grade-section');
     if (section) {
       section.style.display = 'block';
-      setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+      setTimeout(() => {
+        section.classList.add('visible');
+        if (window.innerWidth < 660) {
+          // Mobile: scroll card into view above the fixed sheet
+          const cardArea = document.querySelector('.card-area');
+          const sessionHeader = document.querySelector('.session-header');
+          if (cardArea && sessionHeader) {
+            const targetY = window.scrollY + cardArea.getBoundingClientRect().top - sessionHeader.offsetHeight - 8;
+            window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+          }
+        } else {
+          // Desktop: scroll grade section into view
+          section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 16);
     }
   }
 
   function hideGradeSection() {
     const section = document.getElementById('grade-section');
-    if (section) section.style.display = 'none';
+    if (section) {
+      section.classList.remove('visible');
+      setTimeout(() => { section.style.display = 'none'; }, 380);
+    }
   }
 
   // ── Card rendering ────────────────────────────────────────────────────────────
@@ -226,13 +243,29 @@
       diffBar.appendChild(el('span', { className: 'difficulty-seg' + (n <= phrase.difficulty ? ' on' : '') }));
     }
 
-    // Front face — Japanese prompt with speaker button
+    // Front face — English prompt (see English → recall Japanese)
     const flipHint = el('div', { className: 'card-flip-hint' });
     const touchIcon = document.createElement('span');
     touchIcon.className = 'material-symbols-outlined';
     touchIcon.textContent = 'touch_app';
     flipHint.appendChild(touchIcon);
-    flipHint.appendChild(document.createTextNode('Tap to flip'));
+    flipHint.appendChild(document.createTextNode('Tap to reveal Japanese'));
+
+    const frontContent = el('div', { className: 'card-front-content' }, [
+      el('span', { className: 'card-category-label' }, cat.label),
+      el('div', { className: 'card-english' }, phrase.english),
+    ]);
+
+    const front = el('div', { className: 'card-face card-front' }, [
+      frontContent,
+      flipHint,
+    ]);
+
+    // Back face — Japanese answer with speaker button
+    const diffBar2 = el('div', { className: 'difficulty-bar' });
+    for (let n = 1; n <= 3; n++) {
+      diffBar2.appendChild(el('span', { className: 'difficulty-seg' + (n <= phrase.difficulty ? ' on' : '') }));
+    }
 
     const speakBtn = el('button', { className: 'btn-speak' });
     const speakIcon = document.createElement('span');
@@ -242,33 +275,16 @@
     speakBtn.appendChild(speakIcon);
     speakBtn.addEventListener('click', e => { e.stopPropagation(); speakJapanese(phrase.japanese); });
 
-    const frontContent = el('div', { className: 'card-front-content' }, [
-      diffBar,
-      el('div', { className: 'card-japanese' }, phrase.japanese),
-      el('div', { className: 'card-romaji' }, phrase.romaji),
-    ]);
-
-    const front = el('div', { className: 'card-face card-front' }, [
-      el('span', { className: 'card-category-label' }, cat.label),
-      frontContent,
-      flipHint,
-      speakBtn
-    ]);
-
-    // Back face — English meaning (mirrors front structure for consistent card size)
-    const diffBar2 = el('div', { className: 'difficulty-bar' });
-    for (let n = 1; n <= 3; n++) {
-      diffBar2.appendChild(el('span', { className: 'difficulty-seg' + (n <= phrase.difficulty ? ' on' : '') }));
-    }
-
     const back = el('div', { className: 'card-face card-back' }, [
       el('span', { className: 'card-category-label' }, cat.label),
       el('div', { className: 'card-back-content' }, [
         diffBar2,
-        el('div', { className: 'card-english' }, phrase.english),
+        el('div', { className: 'card-japanese' }, phrase.japanese),
+        el('div', { className: 'card-romaji' }, phrase.romaji),
         ...(phrase.notes ? [el('div', { className: 'card-notes-back' }, phrase.notes)] : [])
       ]),
-      el('div', { className: 'card-flip-hint', style: { visibility: 'hidden' } }, '.')
+      el('div', { className: 'card-flip-hint', style: { visibility: 'hidden' } }, '.'),
+      speakBtn,
     ]);
 
     const flipCard = el('div', { className: 'card', id: 'flip-card' }, [front, back]);
