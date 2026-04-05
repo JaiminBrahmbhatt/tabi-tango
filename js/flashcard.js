@@ -11,8 +11,6 @@
   let isFlipped = false;
   let swipeBlocked = false;
 
-  // ── DOM helper ───────────────────────────────────────────────────────────────
-
   function el(tag, attrs, children) {
     const node = document.createElement(tag);
     if (attrs) Object.entries(attrs).forEach(([k, v]) => {
@@ -27,8 +25,6 @@
     });
     return node;
   }
-
-  // ── Helpers ──────────────────────────────────────────────────────────────────
 
   function getFilteredDeck(cat) {
     const due = SRS.getDueCards();
@@ -67,30 +63,88 @@
     countEl.appendChild(document.createTextNode(' until your Japan trip'));
   }
 
-  // ── Session hero ─────────────────────────────────────────────────────────────
-
   function renderSessionHero() {
     const hero = document.getElementById('session-hero');
     if (!hero) return;
     while (hero.firstChild) hero.removeChild(hero.firstChild);
-
     const h = new Date().getHours();
     const greeting = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
     const due = SRS.getDueCards().length;
-    const sub = due > 0
-      ? `${due} card${due !== 1 ? 's' : ''} due today`
-      : 'All caught up for today';
-
+    const sub = due > 0 ? `${due} card${due !== 1 ? 's' : ''} due today` : 'All caught up for today';
     hero.appendChild(el('div', { className: 'session-greeting' }, greeting));
     hero.appendChild(el('div', { className: 'session-sub' }, sub));
   }
 
-  // ── Render ───────────────────────────────────────────────────────────────────
+  // ── Grade tray ────────────────────────────────────────────────────────────────
+
+  function renderGradeTray(phrase) {
+    const grid = document.getElementById('grade-grid');
+    const tipEl = document.getElementById('grade-tip');
+    const tipText = document.getElementById('grade-tip-text');
+    if (!grid) return;
+
+    while (grid.firstChild) grid.removeChild(grid.firstChild);
+
+    const state = SRS.loadState();
+    const card = state.cards[phrase.id];
+    const ef = card.easeFactor;
+    const iv = card.interval;
+
+    function fmtInterval(n) {
+      if (n <= 1) return '< 1d';
+      return `${n}d`;
+    }
+
+    const grades = [
+      { cls: 'btn-grade-again', icon: 'replay',                    label: 'Again', interval: fmtInterval(1),                                          grade: 0 },
+      { cls: 'btn-grade-hard',  icon: 'sentiment_neutral',         label: 'Hard',  interval: fmtInterval(Math.max(1, Math.round(iv * 1.2))),           grade: 1 },
+      { cls: 'btn-grade-good',  icon: 'sentiment_satisfied',       label: 'Good',  interval: fmtInterval(Math.min(Math.round(iv * ef), 30)),            grade: 2 },
+      { cls: 'btn-grade-easy',  icon: 'sentiment_very_satisfied',  label: 'Easy',  interval: fmtInterval(Math.min(Math.round(iv * ef * 1.3), 30)),      grade: 3 },
+    ];
+
+    grades.forEach(({ cls, icon, label, interval, grade }) => {
+      const btn = el('button', { className: `btn-grade ${cls}` });
+      const iconWrap = el('div', { className: 'btn-grade-icon' });
+      const iconEl = document.createElement('span');
+      iconEl.className = 'material-symbols-outlined';
+      iconEl.textContent = icon;
+      iconWrap.appendChild(iconEl);
+      btn.appendChild(iconWrap);
+      btn.appendChild(el('span', { className: 'btn-grade-label' }, label));
+      btn.appendChild(el('span', { className: 'btn-grade-interval' }, interval));
+      btn.addEventListener('click', () => doGrade(grade));
+      grid.appendChild(btn);
+    });
+
+    if (phrase.notes && tipEl && tipText) {
+      while (tipText.firstChild) tipText.removeChild(tipText.firstChild);
+      const strong = el('strong', {}, 'Tip: ');
+      tipText.appendChild(strong);
+      tipText.appendChild(document.createTextNode(phrase.notes));
+      tipEl.style.display = 'flex';
+    } else if (tipEl) {
+      tipEl.style.display = 'none';
+    }
+  }
+
+  function showGradeTray(phrase) {
+    renderGradeTray(phrase);
+    const tray = document.getElementById('grade-tray');
+    if (tray) tray.classList.add('visible');
+  }
+
+  function hideGradeTray() {
+    const tray = document.getElementById('grade-tray');
+    if (tray) tray.classList.remove('visible');
+  }
+
+  // ── Card rendering ────────────────────────────────────────────────────────────
 
   function renderCard() {
     const root = document.getElementById('flashcard-root');
     if (!root) return;
     while (root.firstChild) root.removeChild(root.firstChild);
+    hideGradeTray();
 
     if (deck.length === 0) {
       root.appendChild(el('div', { className: 'empty-state' }, [
@@ -123,34 +177,47 @@
     }
 
     // Front face
+    const flipHint = el('div', { className: 'card-flip-hint' });
+    const touchIcon = document.createElement('span');
+    touchIcon.className = 'material-symbols-outlined';
+    touchIcon.textContent = 'touch_app';
+    flipHint.appendChild(touchIcon);
+    flipHint.appendChild(document.createTextNode('Tap to reveal'));
+
     const front = el('div', { className: 'card-face card-front' }, [
       el('span', { className: 'card-category-label' }, cat.label),
       el('div', { className: 'card-english' }, phrase.english),
-      el('div', { className: 'card-flip-hint' }, 'Tap to reveal')
+      flipHint
     ]);
 
-    // Back face — grade buttons live inside
+    // Back face (notes are shown in grade tray pro-tip, not here)
     const backContent = el('div', { className: 'card-back-content' }, [
       diffBar,
       el('div', { className: 'card-japanese' }, phrase.japanese),
       el('div', { className: 'card-romaji' }, phrase.romaji),
-      ...(phrase.notes ? [el('div', { className: 'card-notes' }, phrase.notes)] : [])
     ]);
 
-    const btnForgot = el('button', { className: 'btn-grade-forgot', id: 'btn-forgot' }, 'Forgot');
-    const btnRemembered = el('button', { className: 'btn-grade-remembered', id: 'btn-remembered' }, 'Remembered');
-    const gradeRow = el('div', { className: 'card-grade-row' }, [btnForgot, btnRemembered]);
-
-    const back = el('div', { className: 'card-face card-back' }, [backContent, gradeRow]);
+    const back = el('div', { className: 'card-face card-back' }, [backContent]);
 
     const flipCard = el('div', { className: 'card', id: 'flip-card' }, [front, back]);
     const container = el('div', { className: 'card-container', id: 'card-container' }, flipCard);
 
-    // Nav
-    const btnPrev = el('button', { className: 'btn-nav', id: 'btn-prev' }, '←');
-    const btnNext = el('button', { className: 'btn-nav', id: 'btn-next' }, '→');
+    // Nav buttons
+    const btnPrev = el('button', { className: 'btn-nav', id: 'btn-prev' });
+    const prevIcon = document.createElement('span');
+    prevIcon.className = 'material-symbols-outlined';
+    prevIcon.textContent = 'arrow_back';
+    btnPrev.appendChild(prevIcon);
+
+    const btnNext = el('button', { className: 'btn-nav', id: 'btn-next' });
+    const nextIcon = document.createElement('span');
+    nextIcon.className = 'material-symbols-outlined';
+    nextIcon.textContent = 'arrow_forward';
+    btnNext.appendChild(nextIcon);
+
     if (currentIndex === 0) btnPrev.disabled = true;
     if (currentIndex === deck.length - 1) btnNext.disabled = true;
+
     const lastSeenText = cardState.lastSeen ? `Last seen ${cardState.lastSeen}` : 'New card';
     const nav = el('div', { className: 'card-nav' }, [
       btnPrev,
@@ -167,18 +234,13 @@
   function attachListeners() {
     const card = document.getElementById('flip-card');
     const container = document.getElementById('card-container');
-    const btnForgot = document.getElementById('btn-forgot');
-    const btnRemembered = document.getElementById('btn-remembered');
     const btnPrev = document.getElementById('btn-prev');
     const btnNext = document.getElementById('btn-next');
 
     if (card) card.addEventListener('click', doFlip);
-    if (btnForgot) btnForgot.addEventListener('click', e => { e.stopPropagation(); grade(false); });
-    if (btnRemembered) btnRemembered.addEventListener('click', e => { e.stopPropagation(); grade(true); });
     if (btnPrev) btnPrev.addEventListener('click', prevCard);
     if (btnNext) btnNext.addEventListener('click', nextCard);
 
-    // Drag-to-swipe
     if (container) {
       let startX = 0, startY = 0, dragX = 0;
       let dragging = false;
@@ -209,7 +271,6 @@
         dragging = false;
         const canNext = currentIndex < deck.length - 1;
         const canPrev = currentIndex > 0;
-
         if (dragX < -THRESHOLD && canNext) {
           swipeBlocked = true;
           container.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
@@ -231,14 +292,17 @@
     }
   }
 
-  // ── Actions ──────────────────────────────────────────────────────────────────
-
   function doFlip() {
     if (swipeBlocked) { swipeBlocked = false; return; }
     const card = document.getElementById('flip-card');
     if (!card) return;
     isFlipped = !isFlipped;
     card.classList.toggle('flipped', isFlipped);
+    if (isFlipped && deck.length > 0) {
+      showGradeTray(deck[currentIndex]);
+    } else {
+      hideGradeTray();
+    }
   }
 
   function nextCard() {
@@ -249,11 +313,12 @@
     if (currentIndex > 0) { currentIndex--; renderCard(); }
   }
 
-  function grade(remembered) {
-    SRS.gradeCard(deck[currentIndex].id, remembered);
+  function doGrade(grade) {
+    SRS.gradeCard(deck[currentIndex].id, grade);
     updateMasteryBar();
     updateDueBadge();
     renderSessionHero();
+    hideGradeTray();
     setTimeout(() => {
       if (currentIndex < deck.length - 1) {
         currentIndex++;
@@ -264,8 +329,6 @@
       renderCard();
     }, 160);
   }
-
-  // ── Category tabs ─────────────────────────────────────────────────────────────
 
   function initTabs() {
     const tabs = document.getElementById('category-tabs');
@@ -284,20 +347,18 @@
     if (allCount) allCount.textContent = `(${window.PHRASES.length})`;
   }
 
-  // ── Keyboard ──────────────────────────────────────────────────────────────────
-
   document.addEventListener('keydown', e => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     switch (e.key) {
       case ' ': e.preventDefault(); doFlip(); break;
       case 'ArrowRight': e.preventDefault(); nextCard(); break;
       case 'ArrowLeft': e.preventDefault(); prevCard(); break;
-      case '1': if (isFlipped) grade(true); break;
-      case '2': if (isFlipped) grade(false); break;
+      case '1': if (isFlipped) doGrade(0); break;
+      case '2': if (isFlipped) doGrade(1); break;
+      case '3': if (isFlipped) doGrade(2); break;
+      case '4': if (isFlipped) doGrade(3); break;
     }
   });
-
-  // ── Init ──────────────────────────────────────────────────────────────────────
 
   deck = getFilteredDeck('all');
   initTabs();

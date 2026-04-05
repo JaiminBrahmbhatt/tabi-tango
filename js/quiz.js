@@ -12,6 +12,8 @@
   let selectedCount = 10;
   let answered = false;
 
+  const LETTERS = ['A', 'B', 'C', 'D'];
+
   function el(tag, attrs, children) {
     const node = document.createElement(tag);
     if (attrs) Object.entries(attrs).forEach(([k, v]) => {
@@ -136,38 +138,55 @@
     wrap.appendChild(header);
 
     const bar = el('div', { className: 'quiz-progress-bar' });
-    bar.appendChild(el('div', { className: 'quiz-progress-fill', style: { width: `${Math.round((currentQ / quizQuestions.length) * 100)}%` } }));
+    bar.appendChild(el('div', {
+      className: 'quiz-progress-fill',
+      style: { width: `${Math.round((currentQ / quizQuestions.length) * 100)}%` }
+    }));
     wrap.appendChild(bar);
 
     const qCard = el('div', { className: 'quiz-question-card' }, [
-      el('div', { className: 'quiz-prompt-label' }, 'What is the Japanese for…'),
+      el('div', { className: 'quiz-prompt-label' }, 'What is the Japanese for\u2026'),
       el('div', { className: 'quiz-prompt-text' }, phrase.english)
     ]);
     wrap.appendChild(qCard);
 
-    const grid = el('div', { className: 'quiz-options' });
+    const optList = el('div', { className: 'quiz-options' });
     const feedbackEl = el('div', { className: 'quiz-feedback', id: 'quiz-feedback' });
 
-    options.forEach(opt => {
+    options.forEach((opt, idx) => {
       const btn = el('button', { className: 'quiz-option' });
-      btn.appendChild(el('span', { className: 'quiz-option-jp' }, opt.japanese));
-      btn.appendChild(el('span', { className: 'quiz-option-romaji' }, opt.romaji));
-      btn.addEventListener('click', () => handleAnswer(opt.id === phrase.id, btn, grid, phrase, feedbackEl));
-      grid.appendChild(btn);
+
+      const letterBadge = el('div', { className: 'quiz-option-letter' }, LETTERS[idx]);
+      btn.appendChild(letterBadge);
+
+      const content = el('div', { className: 'quiz-option-content' });
+      content.appendChild(el('span', { className: 'quiz-option-jp' }, opt.japanese));
+      content.appendChild(el('span', { className: 'quiz-option-romaji' }, opt.romaji));
+      btn.appendChild(content);
+
+      const checkWrap = el('div', { className: 'quiz-option-check' });
+      const checkIcon = document.createElement('span');
+      checkIcon.className = 'material-symbols-outlined';
+      checkIcon.textContent = 'check_circle';
+      checkWrap.appendChild(checkIcon);
+      btn.appendChild(checkWrap);
+
+      btn.addEventListener('click', () => handleAnswer(opt.id === phrase.id, btn, optList, phrase, feedbackEl));
+      optList.appendChild(btn);
     });
 
-    wrap.appendChild(grid);
+    wrap.appendChild(optList);
     wrap.appendChild(feedbackEl);
     root.appendChild(wrap);
   }
 
-  function handleAnswer(isCorrect, clickedBtn, grid, phrase, feedbackEl) {
+  function handleAnswer(isCorrect, clickedBtn, optList, phrase, feedbackEl) {
     if (answered) return;
     answered = true;
-    grid.querySelectorAll('.quiz-option').forEach(b => { b.disabled = true; });
+    optList.querySelectorAll('.quiz-option').forEach(b => { b.disabled = true; });
 
     // Mark correct answer
-    grid.querySelectorAll('.quiz-option').forEach(b => {
+    optList.querySelectorAll('.quiz-option').forEach(b => {
       const jpSpan = b.querySelector('.quiz-option-jp');
       if (jpSpan && jpSpan.textContent === phrase.japanese) b.classList.add('correct');
     });
@@ -196,17 +215,17 @@
     const pct = Math.round((score / quizQuestions.length) * 100);
     const message =
       pct === 100 ? 'Perfect score! You\'re ready for Japan.' :
-      pct >= 80  ? 'Excellent work — almost perfect.' :
-      pct >= 60  ? 'Good effort. Keep practicing.' :
-      pct >= 40  ? 'Keep studying — you\'ll get there.' :
-                   'Don\'t give up. Review the flashcards and try again.';
+      pct >= 80   ? 'Excellent work — almost perfect.' :
+      pct >= 60   ? 'Good effort. Keep practicing.' :
+      pct >= 40   ? 'Keep studying — you\'ll get there.' :
+                    'Don\'t give up. Review the flashcards and try again.';
 
     const wrap = el('div', { className: 'quiz-results' });
 
     const ring = el('div', { className: 'score-ring' });
     const track = el('div', { className: 'score-ring-track' });
     const deg = Math.round(pct * 3.6);
-    track.style.background = `conic-gradient(var(--primary) ${deg}deg, var(--surface-3) 0deg)`;
+    track.style.background = `conic-gradient(var(--primary) ${deg}deg, var(--surface-high) 0deg)`;
     track.style.borderRadius = '50%';
     track.style.position = 'absolute';
     track.style.inset = '0';

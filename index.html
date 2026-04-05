@@ -3,17 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tabi Tango — Japanese Travel Flashcards</title>
+  <title>Tabi Tango — Study</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <script src="js/theme.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Be+Vietnam+Pro:wght@400;500;600&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/flashcard.css">
 </head>
-<body>
+<body class="grain-overlay">
 
+<!-- Background blobs -->
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
+
+<!-- Top nav (desktop) -->
 <nav>
   <div class="nav-inner">
     <div class="nav-logo">
@@ -22,11 +28,18 @@
     </div>
     <div class="nav-center">
       <a href="index.html" class="nav-link active">
+        <span class="material-symbols-outlined" style="font-size:16px">school</span>
         Study
         <span class="due-badge" id="due-count">0</span>
       </a>
-      <a href="quiz.html" class="nav-link">Quiz</a>
-      <a href="progress.html" class="nav-link">Progress</a>
+      <a href="quiz.html" class="nav-link">
+        <span class="material-symbols-outlined" style="font-size:16px">quiz</span>
+        Quiz
+      </a>
+      <a href="progress.html" class="nav-link">
+        <span class="material-symbols-outlined" style="font-size:16px">leaderboard</span>
+        Progress
+      </a>
     </div>
     <div class="nav-right">
       <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
@@ -48,11 +61,9 @@
 <main>
   <div class="container">
 
-    <!-- Session hero — rendered by JS -->
     <div id="session-hero"></div>
 
     <div class="study-grid">
-      <!-- Sidebar: mastery + categories -->
       <aside class="study-sidebar">
         <div class="mastery-bar-wrap">
           <div class="mastery-bar-labels">
@@ -74,21 +85,47 @@
         </div>
       </aside>
 
-      <!-- Main: card + hints -->
       <div class="study-main">
         <div id="flashcard-root"></div>
         <div class="keyboard-hint">
           <span class="key-item"><kbd>Space</kbd> flip</span>
           <span class="key-item"><kbd>→</kbd> next</span>
           <span class="key-item"><kbd>←</kbd> prev</span>
-          <span class="key-item"><kbd>1</kbd> remembered</span>
-          <span class="key-item"><kbd>2</kbd> forgot</span>
+          <span class="key-item"><kbd>1</kbd> again</span>
+          <span class="key-item"><kbd>2</kbd> hard</span>
+          <span class="key-item"><kbd>3</kbd> good</span>
+          <span class="key-item"><kbd>4</kbd> easy</span>
         </div>
       </div>
     </div>
 
   </div>
 </main>
+
+<!-- Grade tray (shown on flip) -->
+<div class="grade-tray" id="grade-tray">
+  <div class="grade-grid" id="grade-grid"></div>
+  <div class="grade-tip" id="grade-tip" style="display:none">
+    <span class="material-symbols-outlined">lightbulb</span>
+    <p id="grade-tip-text"></p>
+  </div>
+</div>
+
+<!-- Bottom nav (mobile) -->
+<nav class="bottom-nav">
+  <a href="index.html" class="bottom-nav-item active">
+    <span class="material-symbols-outlined">school</span>
+    Study
+  </a>
+  <a href="quiz.html" class="bottom-nav-item">
+    <span class="material-symbols-outlined">quiz</span>
+    Quiz
+  </a>
+  <a href="progress.html" class="bottom-nav-item">
+    <span class="material-symbols-outlined">leaderboard</span>
+    Progress
+  </a>
+</nav>
 
 <footer>
   <span id="trip-countdown">Loading…</span>

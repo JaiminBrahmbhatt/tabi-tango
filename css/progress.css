@@ -3,9 +3,9 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  background: var(--surface);
+  background: var(--surface-lowest);
   border: 1px solid var(--sep);
-  border-radius: var(--r-xl);
+  border-radius: var(--r-2xl);
   padding: 1.5rem;
   margin-bottom: 1.25rem;
   box-shadow: var(--shadow-sm);
@@ -24,7 +24,7 @@
 .readiness-ring-inner {
   position: absolute;
   inset: 10px;
-  background: var(--surface);
+  background: var(--surface-lowest);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -73,10 +73,10 @@
   margin-bottom: 1.25rem;
   border: 1px solid transparent;
 }
-.countdown-banner.green  { background: rgba(52,199,89,0.08);  border-color: rgba(52,199,89,0.2); }
-.countdown-banner.yellow { background: rgba(255,214,10,0.1);  border-color: rgba(255,214,10,0.25); }
-.countdown-banner.orange { background: rgba(255,159,10,0.1);  border-color: rgba(255,159,10,0.25); }
-.countdown-banner.red    { background: rgba(255,59,48,0.08);  border-color: rgba(255,59,48,0.2); }
+.countdown-banner.green  { background: rgba(45,158,79,0.08);  border-color: rgba(45,158,79,0.2); }
+.countdown-banner.yellow { background: rgba(182,24,0,0.06);   border-color: rgba(182,24,0,0.15); }
+.countdown-banner.orange { background: rgba(182,24,0,0.08);   border-color: rgba(182,24,0,0.2); }
+.countdown-banner.red    { background: rgba(180,19,64,0.08);  border-color: rgba(180,19,64,0.2); }
 
 .countdown-days {
   font-family: var(--font-hd);
@@ -87,9 +87,9 @@
   flex-shrink: 0;
 }
 .countdown-banner.green  .countdown-days { color: var(--success); }
-.countdown-banner.yellow .countdown-days { color: var(--warning); }
-.countdown-banner.orange .countdown-days { color: #FF9F0A; }
-.countdown-banner.red    .countdown-days { color: var(--danger); }
+.countdown-banner.yellow .countdown-days { color: var(--primary); }
+.countdown-banner.orange .countdown-days { color: var(--primary); }
+.countdown-banner.red    .countdown-days { color: var(--error); }
 
 .countdown-text strong {
   display: block;
@@ -114,7 +114,7 @@
 @media (min-width: 480px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
 
 .stat-card {
-  background: var(--surface);
+  background: var(--surface-lowest);
   border: 1px solid var(--sep);
   border-radius: var(--r-md);
   padding: 1rem 0.75rem;
@@ -170,7 +170,7 @@
 .cat-mastery-track {
   flex: 1;
   height: 6px;
-  background: var(--surface-3);
+  background: var(--surface-high);
   border-radius: var(--r-full);
   overflow: hidden;
 }
@@ -211,8 +211,8 @@
   border-radius: 3px;
   flex-shrink: 0;
 }
-.legend-dot.future  { background: var(--surface-3); }
-.legend-dot.studied { background: rgba(0,122,255,0.25); }
+.legend-dot.future  { background: var(--surface-high); }
+.legend-dot.studied { background: rgba(182,24,0,0.25); }
 .legend-dot.good    { background: var(--success); }
 .legend-dot.today   { background: var(--primary); }
 
@@ -246,10 +246,10 @@
   font-size: 0.68rem;
   font-weight: 700;
 }
-.cal-day.future  { background: var(--surface-3); color: var(--text-3); }
-.cal-day.studied { background: rgba(0,122,255,0.15); color: var(--primary); }
+.cal-day.future  { background: var(--surface-high); color: var(--text-3); }
+.cal-day.studied { background: rgba(182,24,0,0.15); color: var(--primary); }
 .cal-day.good    { background: var(--success); color: white; }
-.cal-day.missed  { background: rgba(255,59,48,0.08); color: var(--text-3); }
+.cal-day.missed  { background: rgba(180,19,64,0.08); color: var(--text-3); }
 .cal-day.today {
   background: var(--primary);
   color: white;
@@ -274,4 +274,4 @@
   transition: color 0.15s;
   padding: 0.4rem 0.75rem;
 }
-.btn-reset:hover { color: var(--danger); }
+.btn-reset:hover { color: var(--error); }

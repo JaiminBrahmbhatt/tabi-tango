@@ -8,11 +8,15 @@
   <script src="js/theme.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Be+Vietnam+Pro:wght@400;500;600&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/progress.css">
 </head>
-<body>
+<body class="grain-overlay">
+
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
 
 <nav>
   <div class="nav-inner">
@@ -22,11 +26,18 @@
     </div>
     <div class="nav-center">
       <a href="index.html" class="nav-link">
+        <span class="material-symbols-outlined" style="font-size:16px">school</span>
         Study
         <span class="due-badge" id="due-count">0</span>
       </a>
-      <a href="quiz.html" class="nav-link">Quiz</a>
-      <a href="progress.html" class="nav-link active">Progress</a>
+      <a href="quiz.html" class="nav-link">
+        <span class="material-symbols-outlined" style="font-size:16px">quiz</span>
+        Quiz
+      </a>
+      <a href="progress.html" class="nav-link active">
+        <span class="material-symbols-outlined" style="font-size:16px">leaderboard</span>
+        Progress
+      </a>
     </div>
     <div class="nav-right">
       <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
@@ -54,6 +65,21 @@
     <div id="progress-root"></div>
   </div>
 </main>
+
+<nav class="bottom-nav">
+  <a href="index.html" class="bottom-nav-item">
+    <span class="material-symbols-outlined">school</span>
+    Study
+  </a>
+  <a href="quiz.html" class="bottom-nav-item">
+    <span class="material-symbols-outlined">quiz</span>
+    Quiz
+  </a>
+  <a href="progress.html" class="bottom-nav-item active">
+    <span class="material-symbols-outlined">leaderboard</span>
+    Progress
+  </a>
+</nav>
 
 <footer>
   <span id="trip-countdown">Loading…</span>

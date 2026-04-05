@@ -51,7 +51,7 @@
       tripStartDate: today(),
       cards,
       quizHistory: [],
-      dailyReviews: {},   // { "2026-04-05": { reviewed: 5, correct: 3 } }
+      dailyReviews: {},
       dailyStreak: 0,
       lastStudyDate: null
     };
@@ -63,7 +63,6 @@
       state = buildFreshState();
       saveState(state);
     } else {
-      // Ensure any new phrases added to data.js get a card entry
       window.PHRASES.forEach(p => {
         if (!state.cards[p.id]) state.cards[p.id] = freshCardState();
       });
@@ -82,7 +81,6 @@
       })
       .map(p => p.id);
 
-    // Sort: never seen first, then overdue oldest first, then due today
     due.sort((a, b) => {
       const ca = state.cards[a];
       const cb = state.cards[b];
@@ -95,32 +93,45 @@
     return due;
   }
 
-  function gradeCard(id, remembered) {
+  function gradeCard(id, grade) {
+    if (typeof grade === 'boolean') grade = grade ? 2 : 0;
     const state = loadState();
     const card = state.cards[id];
     const t = today();
 
-    if (remembered) {
-      card.reps += 1;
-      card.interval = Math.min(Math.round(card.interval * card.easeFactor), 30);
-      card.easeFactor = Math.min(card.easeFactor + 0.1, 3.0);
-      card.mastered = card.interval >= 21;
-    } else {
-      card.lapses += 1;
-      card.interval = 1;
-      card.easeFactor = Math.max(card.easeFactor - 0.2, 1.3);
-      card.mastered = false;
+    switch (grade) {
+      case 0: // Again
+        card.lapses += 1;
+        card.interval = 1;
+        card.easeFactor = Math.max(card.easeFactor - 0.2, 1.3);
+        card.mastered = false;
+        break;
+      case 1: // Hard
+        card.lapses += 1;
+        card.interval = Math.max(1, Math.round(card.interval * 1.2));
+        card.easeFactor = Math.max(card.easeFactor - 0.15, 1.3);
+        card.mastered = false;
+        break;
+      case 2: // Good
+        card.reps += 1;
+        card.interval = Math.min(Math.round(card.interval * card.easeFactor), 30);
+        card.mastered = card.interval >= 21;
+        break;
+      case 3: // Easy
+        card.reps += 1;
+        card.interval = Math.min(Math.round(card.interval * card.easeFactor * 1.3), 30);
+        card.easeFactor = Math.min(card.easeFactor + 0.1, 3.0);
+        card.mastered = card.interval >= 21;
+        break;
     }
 
     card.nextReview = addDays(t, card.interval);
     card.lastSeen = t;
 
-    // Track daily reviews
     if (!state.dailyReviews[t]) state.dailyReviews[t] = { reviewed: 0, correct: 0 };
     state.dailyReviews[t].reviewed += 1;
-    if (remembered) state.dailyReviews[t].correct += 1;
+    if (grade >= 2) state.dailyReviews[t].correct += 1;
 
-    // Update streak
     if (state.lastStudyDate !== t) {
       if (state.lastStudyDate && daysBetween(state.lastStudyDate, t) === 1) {
         state.dailyStreak += 1;
@@ -158,12 +169,7 @@
 
   function recordQuizResult(score, total, category) {
     const state = loadState();
-    state.quizHistory.push({
-      date: today(),
-      score,
-      total,
-      category
-    });
+    state.quizHistory.push({ date: today(), score, total, category });
     saveState(state);
   }
 
