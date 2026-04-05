@@ -4,7 +4,7 @@
 
 Study the 65 most useful phrases for traveling Japan — greetings, food, shopping, directions, and emergencies — using a science-backed SRS algorithm that schedules reviews right when you're about to forget.
 
-🌐 **Live:** [strong-truffle-cc03aa.netlify.app](https://strong-truffle-cc03aa.netlify.app/)
+🌐 **Live:** [tabitango.netlify.app](https://tabitango.netlify.app/)
 
 ---
 
