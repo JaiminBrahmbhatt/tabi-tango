@@ -432,8 +432,8 @@ html[data-theme="dark"] .bottom-nav {
   margin-bottom: 0.5rem;
 }
 .mastery-bar-track {
-  height: 5px;
-  background: var(--surface-high);
+  height: 7px;
+  background: var(--surface-variant);
   border-radius: var(--r-full);
   overflow: hidden;
 }
@@ -541,6 +541,13 @@ footer strong { color: var(--text); font-weight: 700; }
   gap: 0.4rem;
   flex-wrap: wrap;
   justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.keyboard-hint.card-flipped .kb-grade-group {
+  opacity: 1;
+  pointer-events: auto;
 }
 .kb-grade-item {
   display: flex;

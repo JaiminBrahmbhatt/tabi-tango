@@ -283,7 +283,6 @@
         el('div', { className: 'card-romaji' }, phrase.romaji),
         ...(phrase.notes ? [el('div', { className: 'card-notes-back' }, phrase.notes)] : [])
       ]),
-      el('div', { className: 'card-flip-hint', style: { visibility: 'hidden' } }, '.'),
       speakBtn,
     ]);
 
@@ -316,6 +315,8 @@
     root.appendChild(el('div', { className: 'card-area' }, [counter, container, nav]));
 
     isFlipped = false;
+    const kbHint = document.querySelector('.keyboard-hint');
+    if (kbHint) kbHint.classList.remove('card-flipped');
     updateSessionHeader(currentIndex, deck.length);
     attachListeners();
   }
@@ -387,6 +388,8 @@
     if (!card) return;
     isFlipped = !isFlipped;
     card.classList.toggle('flipped', isFlipped);
+    const kbHint = document.querySelector('.keyboard-hint');
+    if (kbHint) kbHint.classList.toggle('card-flipped', isFlipped);
     if (isFlipped && deck.length > 0) {
       showGradeSection(deck[currentIndex]);
     } else {

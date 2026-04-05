@@ -4,6 +4,17 @@
   margin: 0 auto;
 }
 
+@media (min-width: 660px) {
+  .quiz-setup {
+    background: var(--surface-lowest);
+    border: 1px solid var(--sep);
+    border-radius: var(--r-2xl);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-md);
+    margin-top: 1.5rem;
+  }
+}
+
 .quiz-setup-header { margin-bottom: 2rem; }
 .quiz-setup-header h2 {
   font-family: var(--font-hd);
