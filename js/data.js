@@ -7,7 +7,7 @@ window.CATEGORIES = {
 };
 
 window.PHRASES = [
-  // ─── Greetings & Basics (15) ───────────────────────────────────────────────
+  // ─── Greetings & Basics (19) ───────────────────────────────────────────────
   { id: "greet_001", category: "greetings", english: "Good morning",          japanese: "おはようございます",       romaji: "Ohayou gozaimasu",              notes: "Formal morning greeting",            difficulty: 1 },
   { id: "greet_002", category: "greetings", english: "Good afternoon / Hello", japanese: "こんにちは",              romaji: "Konnichiwa",                    notes: "Universal daytime greeting",         difficulty: 1 },
   { id: "greet_003", category: "greetings", english: "Good evening",           japanese: "こんばんは",              romaji: "Konbanwa",                      notes: "Evening greeting",                   difficulty: 1 },
@@ -24,7 +24,13 @@ window.PHRASES = [
   { id: "greet_014", category: "greetings", english: "I don't understand",     japanese: "わかりません",             romaji: "Wakarimasen",                   notes: "Very useful phrase",                 difficulty: 1 },
   { id: "greet_015", category: "greetings", english: "Do you speak English?",  japanese: "英語を話せますか？",        romaji: "Eigo wo hanasemasu ka?",        notes: "Ask locals for help",                difficulty: 2 },
 
-  // ─── Food & Restaurants (15) ───────────────────────────────────────────────
+  // ─── Greetings & Basics (continued) ──────────────────────────────────────
+  { id: "greet_016", category: "greetings", english: "Nice to meet you",          japanese: "はじめまして",              romaji: "Hajimemashite",                 notes: "First-time introduction",            difficulty: 1 },
+  { id: "greet_017", category: "greetings", english: "Please speak slowly",       japanese: "ゆっくり話してください",     romaji: "Yukkuri hanashite kudasai",     notes: "Ask someone to slow down",           difficulty: 2 },
+  { id: "greet_018", category: "greetings", english: "Can you repeat that?",      japanese: "もう一度言ってください",     romaji: "Mou ichido itte kudasai",       notes: "Ask them to say it again",           difficulty: 2 },
+  { id: "greet_019", category: "greetings", english: "I don't speak Japanese",    japanese: "日本語が話せません",          romaji: "Nihongo ga hanasemasen",        notes: "Set language expectations",          difficulty: 1 },
+
+  // ─── Food & Restaurants (20) ───────────────────────────────────────────────
   { id: "food_001", category: "food", english: "I'd like to order",            japanese: "注文をお願いします",       romaji: "Chuumon wo onegaishimasu",      notes: "Flag down a waiter",                 difficulty: 2 },
   { id: "food_002", category: "food", english: "The check, please",            japanese: "お会計をお願いします",     romaji: "Okaikei wo onegaishimasu",      notes: "Ask for the bill",                   difficulty: 2 },
   { id: "food_003", category: "food", english: "It's delicious!",              japanese: "おいしい！",              romaji: "Oishii!",                       notes: "Compliment the food",                difficulty: 1 },
@@ -41,7 +47,13 @@ window.PHRASES = [
   { id: "food_014", category: "food", english: "Very tasty, thank you",        japanese: "とてもおいしかったです",    romaji: "Totemo oishikatta desu",        notes: "Compliment after eating",            difficulty: 2 },
   { id: "food_015", category: "food", english: "Where is the entrance?",       japanese: "入口はどこですか？",        romaji: "Iriguchi wa doko desu ka?",     notes: "Find the restaurant entrance",       difficulty: 2 },
 
-  // ─── Shopping (10) ─────────────────────────────────────────────────────────
+  { id: "food_016", category: "food", english: "Dine in / For here",             japanese: "食べていきます",            romaji: "Tabete ikimasu",                notes: "Eating at the restaurant",           difficulty: 1 },
+  { id: "food_017", category: "food", english: "Takeout / To go",                japanese: "持ち帰りで",                romaji: "Mochikaeride",                  notes: "Common at convenience stores too",    difficulty: 1 },
+  { id: "food_018", category: "food", english: "One more of this, please",       japanese: "これをもう一つください",     romaji: "Kore wo mou hitotsu kudasai",   notes: "Reorder at the table",               difficulty: 2 },
+  { id: "food_019", category: "food", english: "Set meal, please",               japanese: "セットでお願いします",       romaji: "Setto de onegaishimasu",        notes: "Order a combo/set",                  difficulty: 2 },
+  { id: "food_020", category: "food", english: "Without [ingredient], please",   japanese: "〜なしでお願いします",       romaji: "~ nashi de onegaishimasu",      notes: "General template for dietary needs", difficulty: 2 },
+
+  // ─── Shopping (13) ─────────────────────────────────────────────────────────
   { id: "shop_001", category: "shopping", english: "How much is this?",        japanese: "これはいくらですか？",      romaji: "Kore wa ikura desu ka?",        notes: "Essential shopping phrase",          difficulty: 1 },
   { id: "shop_002", category: "shopping", english: "That's too expensive",     japanese: "高すぎます",              romaji: "Takasugimasu",                  notes: "Politely decline on price",          difficulty: 2 },
   { id: "shop_003", category: "shopping", english: "Do you have another size?",japanese: "別のサイズはありますか？",  romaji: "Betsu no saizu wa arimasu ka?", notes: "Ask for different size",             difficulty: 2 },
@@ -53,7 +65,11 @@ window.PHRASES = [
   { id: "shop_009", category: "shopping", english: "Tax included?",            japanese: "税込みですか？",            romaji: "Zeikomi desu ka?",              notes: "Check if tax is included",           difficulty: 2 },
   { id: "shop_010", category: "shopping", english: "Do you have another color?",japanese: "別の色はありますか？",     romaji: "Betsu no iro wa arimasu ka?",   notes: "Ask for color options",              difficulty: 2 },
 
-  // ─── Directions & Transportation (15) ──────────────────────────────────────
+  { id: "shop_011", category: "shopping", english: "Can I try this on?",        japanese: "試着してもいいですか？",    romaji: "Shichaku shite mo ii desu ka?", notes: "Fitting room request",               difficulty: 2 },
+  { id: "shop_012", category: "shopping", english: "Tax-free shopping?",        japanese: "免税できますか？",            romaji: "Menzei dekimasu ka?",           notes: "Duty-free for tourists",             difficulty: 2 },
+  { id: "shop_013", category: "shopping", english: "Can I get a receipt?",      japanese: "領収書をください",            romaji: "Ryoushusho wo kudasai",         notes: "Ask for a formal receipt",           difficulty: 2 },
+
+  // ─── Directions & Transportation (17) ──────────────────────────────────────
   { id: "dir_001", category: "directions", english: "Where is the train station?", japanese: "駅はどこですか？",       romaji: "Eki wa doko desu ka?",           notes: "Find the station",                  difficulty: 1 },
   { id: "dir_002", category: "directions", english: "Where is the bathroom?",     japanese: "トイレはどこですか？",    romaji: "Toire wa doko desu ka?",         notes: "Most used phrase ever",             difficulty: 1 },
   { id: "dir_003", category: "directions", english: "Turn right",                 japanese: "右に曲がってください",    romaji: "Migi ni magatte kudasai",        notes: "Direction instruction",             difficulty: 2 },
@@ -69,6 +85,9 @@ window.PHRASES = [
   { id: "dir_013", category: "directions", english: "Is there a bus to…?",        japanese: "〜行きのバスはありますか？", romaji: "~ yuki no basu wa arimasu ka?", notes: "Find bus to destination",           difficulty: 2 },
   { id: "dir_014", category: "directions", english: "Please stop here",           japanese: "ここで止めてください",     romaji: "Koko de tomete kudasai",         notes: "Tell taxi driver to stop",          difficulty: 2 },
   { id: "dir_015", category: "directions", english: "Where is the nearest hotel?",japanese: "一番近いホテルはどこですか？", romaji: "Ichiban chikai hoteru wa doko desu ka?", notes: "Find accommodation",       difficulty: 2 },
+
+  { id: "dir_016", category: "directions", english: "Can you show me on the map?", japanese: "地図で教えてください",    romaji: "Chizu de oshiete kudasai",       notes: "Point to map when words fail",      difficulty: 2 },
+  { id: "dir_017", category: "directions", english: "What time does it close?",  japanese: "何時に閉まりますか？",      romaji: "Nanji ni shimarimasu ka?",       notes: "Check closing hours",               difficulty: 1 },
 
   // ─── Emergency & Help (10) ─────────────────────────────────────────────────
   { id: "emrg_001", category: "emergency", english: "Help!",                    japanese: "助けてください！",         romaji: "Tasukete kudasai!",              notes: "Call for help urgently",            difficulty: 1 },
